@@ -1,0 +1,36 @@
+name: Ruby on Rails CI
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Set up Ruby
+        uses: ruby/setup-ruby@v1
+
+      - name: 📦 Install Dependencies
+        run: bundle install
+
+      - name: Create Database
+        run: bundle exec rails db:create
+
+      - name: Migrate Database
+        run: bundle exec rails db:migrate
+
+      - name: 🧪 Run Tests
+        run: bundle exec rails test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run lint
+        run: rubocop
